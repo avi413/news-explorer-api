@@ -22,7 +22,7 @@ const articleSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-  source : {
+  source: {
     type: String,
     required: true,
     minlength: 2,
@@ -63,5 +63,4 @@ const articleSchema = new mongoose.Schema({
   },
 
 });
-
-module.exports = mongoose.model('card', cardSchema);
+module.exports = mongoose.model('article', articleSchema);

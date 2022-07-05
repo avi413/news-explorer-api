@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const { ForbiddenError } = require('./errors/errors');
+
 const { NODE_ENV, JWT_SECRET } = process.env;
 
 module.exports = (req, res, next) => {
@@ -8,8 +9,7 @@ module.exports = (req, res, next) => {
   // check that the header exists and starts with 'Bearer '
 
   if (!authorization || !authorization.startsWith('Bearer ')) {
-
-      throw new ForbiddenError('Authorization required' );
+    throw new ForbiddenError('Authorization required');
   }
 
    // auth header exists and is in correct format
@@ -22,7 +22,7 @@ module.exports = (req, res, next) => {
      payload = jwt.verify(token, NODE_ENV === 'production' ? JWT_SECRET : 'not-so-secret-string');
    } catch (err) {
      // otherwise, return an error
-      throw new ForbiddenError('Authorization required' );
+      throw new ForbiddenError('Authorization required');
    }
 
    /* Save payload to request. This makes the payload available

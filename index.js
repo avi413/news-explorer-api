@@ -5,9 +5,13 @@ const mongoose = require('mongoose');
 const helmet = require('helmet');
 const bodyParser = require('body-parser');
 const { errors } = require('celebrate');
-
 const { NotFoundError } = require('./middlewares/errors/errors');
-const { limiter  } = require('./middlewares/limiter');
+const { limiter } = require('./middlewares/limiter');
+const usersAouth = require('./routes/usersAouth');
+const articles = require('./routes/articles');
+const users = require('./routes/users');
+
+const auth = require('./middlewares/auth');
 const { requestLogger } = require('./middlewares/logger');
 
 const { PORT = 3000 } = process.env;
@@ -28,21 +32,13 @@ mongoose
     app.use(limiter);
     app.use(requestLogger);
 
-    app.use('/', (req,res)=> {
-      res.send({"status" : "ok"})
-    });
-    app.use('/users', (req,res)=> {
-      res.send({"status" : "ok"})
-    });
-    app.use('/articles', (req,res)=> {
-      res.send({"status" : "ok"})
-    });
+    app.use('/', usersAouth);
+    app.use('/users', auth, users);
+    app.use('/articles', auth, articles);
 
-    app.get('*', (req, res) => {
-     throw new NotFoundError('Requested resource not found' );
+    app.get('*', () => {
+     throw new NotFoundError('Requested resource not found');
     });
-
-
 
     // error handlers
     app.use(errors()); // celebrate error handler
@@ -53,7 +49,7 @@ mongoose
         // check the status and display a message based on it
         message: statusCode === 500 && !message
           ? 'An error occurred on the server'
-          : message
+          : message,
       });
     });
 
