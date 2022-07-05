@@ -24,6 +24,7 @@ router.post(
         tlds: { allow: ['com', 'net'] },
       }),
       password: Joi.string().required().min(2),
+      name: Joi.string().required().min(2),
     }),
   }),
   createUser,

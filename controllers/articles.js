@@ -34,7 +34,7 @@ module.exports.saveArticle = (req, res) => {
     image,
     owner,
   })
-    .then((article) => res.send({ data: article }))
+    .then((article) => res.status(201).send({ data: article }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         res.status(400).send({ message: err.message });
