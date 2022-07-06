@@ -89,6 +89,6 @@ module.exports.createUser = (req, res) => {
       password: hash,
       name,
     }))
-    .then((user) => res.status(201).send({ data: user }))
+    .then((user) => res.status(201).send({ name, email, _id: user._id  }))
     .catch((err) => isValid(err, res));
 };
