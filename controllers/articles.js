@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const Article = require('../models/article');
-const error = require('../middlewares/errors/errors');
+const { NotFoundError,UnauthorizedError, BadRequest } = require('../middlewares/errors/errors');
 
 module.exports.getArticles = (req, res, next) => {
   const owner = req.user._id;
@@ -8,7 +8,7 @@ module.exports.getArticles = (req, res, next) => {
     // return the found data to the article
     .then((article) => {
       if (!Object.keys(article).length) {
-        throw new error.NotFoundError('No result found');
+        throw new NotFoundError('No result found');
       }
       return res.send({ data: article });
     })
@@ -18,25 +18,7 @@ module.exports.getArticles = (req, res, next) => {
 
 module.exports.saveArticle = (req, res) => {
   const owner = req.user._id;
-  const {
-    keyword,
-    title,
-    text,
-    source,
-    link,
-    image,
-    date,
-  } = req.body;
-  Article.create({
-    keyword,
-    title,
-    text,
-    source,
-    link,
-    image,
-    owner,
-    date,
-  })
+  Article.create({...req.body, owner})
     .then((article) => res.status(201).send({ data: article }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
@@ -57,13 +39,13 @@ module.exports.deleteArticle = (req, res, next) => {
             .then((data) => res.send({ data }))
             .catch((err) => res.status(500).send({ message: err.message }));
         } else {
-          throw new error.ForbiddenError('Can\'t delete other users article');
+          throw new UnauthorizedError('Can\'t delete other users article');
         }
       })
       .catch(next);
   } else {
     // bad request
-    throw new error.BadRequest('Please provide correct id');
+    throw new BadRequest('Please provide correct id');
   }
 };
 

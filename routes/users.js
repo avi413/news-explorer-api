@@ -4,8 +4,8 @@ const { getMe } = require('../controllers/users');
 
 router.get('/me', getMe);
 
-router.get('*', () => {
-  throw new NotFoundError('Requested resource not found');
-});
+router.get('*', (req, res, next) => next());
+
+router.use((req, res, next) => { next(new NotFoundError('Requested resource not found')); });
 
 module.exports = router;

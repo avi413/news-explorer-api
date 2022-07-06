@@ -11,7 +11,7 @@ const {
 
 router.get('/', getArticles);
 
-router.get('*', () => { throw new NotFoundError('Requested resource not found'); });
+router.get('*', (req, res, next) => next());
 
 router.post(
   '/',
@@ -29,14 +29,11 @@ router.post(
   saveArticle,
 );
 
-router.post('*', () => {
-  throw new NotFoundError('Requested resource not found');
-});
+router.post('*', (req, res, next) => next());
 
 router.delete('/:id', articleExist, deleteArticle);
 
-router.delete('*', () => {
-  throw new NotFoundError('Requested resource not found');
-});
+router.delete('*', (req, res, next) => next());
 
+router.use((req, res, next) => { next(new NotFoundError('Requested resource not found')); });
 module.exports = router; // exporting the router

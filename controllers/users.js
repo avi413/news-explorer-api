@@ -2,7 +2,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 const User = require('../models/user');
-const { NotFoundError, BadRequest } = require('../middlewares/errors/errors');
+const { NotFoundError, BadRequest, UnauthorizedError } = require('../middlewares/errors/errors');
 
 const { NODE_ENV, JWT_SECRET } = process.env;
 
@@ -10,24 +10,24 @@ const isValid = (error, res) => {
   if (error.name === 'ValidationError') {
     return res.status(400).send({ message: error.message });
   }
-  return res.status(500).send({ message: error.message });
+  //throw new UnauthorizedError(error.message);
+  return res.status(409).send({ message: error.message });
 };
 
 module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
-
   User.findOne({ email })
     .select('+password')
     .then((user) => {
       if (!user) {
-        throw new NotFoundError('Incorrect email or password');
+        throw new UnauthorizedError('Incorrect email or password');
       }
       // user.password is the hash from the database
       return bcrypt
         .compare(password, user.password)
         .then((matched) => {
           if (!matched) {
-            throw new NotFoundError('Incorrect email or password');
+            throw new UnauthorizedError('Incorrect email or password');
           }
           // successful authentication
           const token = jwt.sign(
