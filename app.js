@@ -14,10 +14,10 @@ const users = require('./routes/users');
 const auth = require('./middlewares/auth');
 const { requestLogger } = require('./middlewares/logger');
 
-const { PORT = 3000 } = process.env;
+const { PORT = 3000, MONGODB_URI } = process.env;
 
 mongoose
-  .connect('mongodb://0.0.0.0:27017/newsexplorerdb', {
+  .connect(MONGODB_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
