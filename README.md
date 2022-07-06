@@ -136,7 +136,7 @@ Content-Length: 36
 
 ## Demo
 
-[Demo](https://avi413.github.io/)
+[Demo](http://api.news.students.nomoredomainssbs.ru:3000/)
 
 
 ## 🔗 Links
