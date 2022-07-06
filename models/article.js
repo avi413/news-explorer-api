@@ -19,12 +19,12 @@ const articleSchema = new mongoose.Schema({
     minlength: 2,
   },
   date: {
-    type: Date,
-    default: Date.now,
+    type: String,
+    required: true,
   },
   source: {
     type: String,
-    required: true,
+
     minlength: 2,
     maxlength: 200,
   },
@@ -42,7 +42,7 @@ const articleSchema = new mongoose.Schema({
       message: 'Must be a Valid URL', // when the validator returns false, this message will be displayed
     },
   },
-  avatar: {
+  image: {
     type: String,
     equired: true,
     validate: {

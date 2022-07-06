@@ -3,7 +3,8 @@ const Article = require('../models/article');
 const error = require('../middlewares/errors/errors');
 
 module.exports.getArticles = (req, res, next) => {
-  Article.find({})
+  const owner = req.user._id;
+  Article.find({owner: owner})
     // return the found data to the article
     .then((article) => {
       if (!Object.keys(article).length) {
@@ -24,6 +25,7 @@ module.exports.saveArticle = (req, res) => {
     source,
     link,
     image,
+    date,
   } = req.body;
   Article.create({
     keyword,
@@ -33,6 +35,7 @@ module.exports.saveArticle = (req, res) => {
     link,
     image,
     owner,
+    date,
   })
     .then((article) => res.status(201).send({ data: article }))
     .catch((err) => {
@@ -46,6 +49,7 @@ module.exports.saveArticle = (req, res) => {
 module.exports.deleteArticle = (req, res, next) => {
   if (mongoose.Types.ObjectId.isValid(req.params.id)) {
     Article.findById(req.params.id)
+      .select('owner')
       .then((article) => {
         const ownerId = article.owner.toString();
         if (req.user._id === ownerId) {

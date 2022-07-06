@@ -23,6 +23,7 @@ router.post(
       source: Joi.string().required(),
       link: Joi.string().required(),
       image: Joi.string().required(),
+      date: Joi.string().required(),
     }),
   }),
   saveArticle,
@@ -32,7 +33,7 @@ router.post('*', () => {
   throw new NotFoundError('Requested resource not found');
 });
 
-router.delete('/:articleId ', articleExist, deleteArticle);
+router.delete('/:id', articleExist, deleteArticle);
 
 router.delete('*', () => {
   throw new NotFoundError('Requested resource not found');
