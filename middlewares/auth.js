@@ -4,6 +4,7 @@ const { ForbiddenError } = require('./errors/errors');
 const { NODE_ENV, JWT_SECRET } = process.env;
 
 module.exports = (req, res, next) => {
+  console.log(req.headers);
   // get authorization from the header by destructuring
   const { authorization } = req.headers;
   // check that the header exists and starts with 'Bearer '

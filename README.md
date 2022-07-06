@@ -136,7 +136,7 @@ Content-Length: 36
 
 ## Demo
 
-[Demo](http://api.news.students.nomoredomainssbs.ru:3000/)
+[Demo](https://api.news.students.nomoredomainssbs.ru/)
 
 
 ## 🔗 Links
