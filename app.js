@@ -5,6 +5,9 @@ const mongoose = require('mongoose');
 const helmet = require('helmet');
 const bodyParser = require('body-parser');
 const { errors } = require('celebrate');
+const swaggerUi = require('swagger-ui-express');
+const swaggerJsDoc = require('swagger-jsdoc');
+const swaggerDefinition = require('./swagger.json');
 const { NotFoundError } = require('./middlewares/errors/errors');
 const { limiter } = require('./middlewares/limiter');
 const usersAouth = require('./routes/usersAouth');
@@ -23,6 +26,14 @@ mongoose
   })
   .then(() => {
     const app = express();
+
+    const swaggerOptions= {
+      apis: ['app.js','./routs*.js'],
+      swaggerDefinition,
+     };
+    const swaggerDocs = swaggerJsDoc(swaggerOptions);
+    app.use('/api-docs',swaggerUi.serve, swaggerUi.setup(swaggerDocs))
+
     app.disable('etag');
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: true }));
@@ -33,9 +44,19 @@ mongoose
     app.use(requestLogger);
 
     app.use('/', usersAouth);
+    /**
+ * @swagger
+ * /users/me:
+ *   get:
+ *	   security:
+ *	     - BearerAuth: []
+ *     description: get current user data!
+ *     responses:
+ *       200:
+ *         description: Returns a mysterious string.
+ */
     app.use('/users', auth, users);
     app.use('/articles', auth, articles);
-
     app.get('*', () => {
      throw new NotFoundError('Requested resource not found');
     });
