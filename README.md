@@ -1,6 +1,6 @@
 # news-explorer-api
 
-This is a user authentication example providing a REST API to a user and his data. :\
+This is a user authentication example providing a REST API to a user and his data.
 
 # REST API
 
@@ -10,7 +10,7 @@ The REST API to the example app is described below.
 
 ### Request
 
-`GET /articles/`
+`GET /articles`
 `GET /articles/:{articleId}`
     curl -i -H 'Accept: application/json' http://localhost:3000/articles/?:{articleId}
 
@@ -38,13 +38,13 @@ The REST API to the example app is described below.
 
 ### Request
 
-`POST /articles/`
+`POST /articles`
 
     curl -i -H 'Accept: application/json' http://localhost:3000/articles/
 
 ### Response
 
-    HTTP/1.1 200 OK
+    HTTP/1.1 201 OK
     Date: Thu, 24 Feb 2011 12:36:30 GMT
     Status: 201 OK
     Connection: close
@@ -92,27 +92,23 @@ The REST API to the example app is described below.
 
 ### Request
 
-`POST /signup/`
+`POST /signup`
 
     curl -i -H 'Accept: application/json' http://localhost:3000/signup/
 
 ### Response
+    HTTP/1.1 200 OK
+    Date: Thu, 24 Feb 2011 12:36:30 GMT
+    Status: 200 OK
+    Connection: close
+    Content-Type: application/json
+    Content-Length: 2
 
-HTTP/1.1 201 Created
-Date: Thu, 24 Feb 2011 12:36:30 GMT
-Status: 201 Created
-Connection: close
-Content-Type: application/json
-Location: /thing/1
-Content-Length: 36
-
-{"id":"*************","name":"name","email":"email@email.com"}
-
-
+    {"id":"*************","name":"name","email":"email@email.com"}
 
 ### Request
 
-`POST /signin /`
+`POST /signin`
 
     curl -i -H 'Accept: application/json' http://localhost:3000/signin /
 
