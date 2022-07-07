@@ -4,6 +4,9 @@ const { NotFoundError,UnauthorizedError, BadRequest } = require('../middlewares/
 
 module.exports.getArticles = (req, res, next) => {
   const owner = req.user._id;
+  if (!mongoose.Types.ObjectId.isValid(owner)) {
+    throw new BadRequest('Invalid owner id');
+  }
   Article.find({owner: owner})
     // return the found data to the article
     .then((article) => {
@@ -16,17 +19,11 @@ module.exports.getArticles = (req, res, next) => {
     .catch(next);
 };
 
-module.exports.saveArticle = (req, res) => {
+module.exports.saveArticle = (req, res,next) => {
   const owner = req.user._id;
   Article.create({...req.body, owner})
     .then((article) => res.status(201).send({ data: article }))
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        res.status(400).send({ message: err.message });
-      } else {
-        res.status(500).send({ message: err.message });
-      }
-    });
+    .catch(next);
 };
 module.exports.deleteArticle = (req, res, next) => {
   if (mongoose.Types.ObjectId.isValid(req.params.id)) {
@@ -37,7 +34,7 @@ module.exports.deleteArticle = (req, res, next) => {
         if (req.user._id === ownerId) {
           Article.findByIdAndRemove(req.params.id)
             .then((data) => res.send({ data }))
-            .catch((err) => res.status(500).send({ message: err.message }));
+            .catch(next);
         } else {
           throw new UnauthorizedError('Can\'t delete other users article');
         }
@@ -55,13 +52,13 @@ module.exports.articleExist = (req, res, next) => {
       .then((article) => {
         // if the record was not found, display an error message
         if (!article) {
-          throw new error.NotFoundError('record not found');
+          throw new NotFoundError('Record not found');
         }
         return next();
       })
       .catch(next);
   } else {
     // bad request
-    throw new error.BadRequest('Please provide correct id');
+    throw new BadRequest('Please provide correct id');
   }
 };

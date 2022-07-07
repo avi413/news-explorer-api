@@ -2,16 +2,15 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 const User = require('../models/user');
-const { NotFoundError, BadRequest, UnauthorizedError } = require('../middlewares/errors/errors');
+const { NotFoundError, BadRequest, UnauthorizedError,ConflictError } = require('../middlewares/errors/errors');
 const {} =  require('../utils/constants');
 const { NODE_ENV, JWT_SECRET } = process.env;
 
-const isValid = (error, res) => {
+const isValid = (error, next) => {
   if (error.name === 'ValidationError') {
-    return res.status(400).send({ message: error.message });
+    next(new NotFoundError(error.message));
   }
-  //throw new UnauthorizedError(error.message);
-  return res.status(409).send({ message: error.message });
+    next(new ConflictError(error.message));
 };
 
 module.exports.login = (req, res, next) => {
@@ -80,7 +79,7 @@ module.exports.getMe = (req, res, next) => User.findById(req.user._id)
   })
   .catch(next);
 
-module.exports.createUser = (req, res) => {
+module.exports.createUser = (req, res, next) => {
   const { email, password, name } = req.body;
   bcrypt
     .hash(password, 10)
@@ -90,5 +89,5 @@ module.exports.createUser = (req, res) => {
       name,
     }))
     .then((user) => res.status(201).send({ name, email, _id: user._id  }))
-    .catch((err) => isValid(err, res));
+    .catch((err) => isValid(err, next));
 };
