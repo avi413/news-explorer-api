@@ -1,7 +1,6 @@
 const router = require('express').Router(); // creating a router
 const { celebrate, Joi } = require('celebrate');
-const { NotFoundError } = require('../middlewares/errors/errors');
-
+const auth = require('../middlewares/auth');
 const {
   getArticles,
   saveArticle,
@@ -9,12 +8,10 @@ const {
   articleExist,
 } = require('../controllers/articles');
 
-router.get('/', getArticles);
-
-router.get('*', (req, res, next) => next());
+router.get('/articles', auth, getArticles);
 
 router.post(
-  '/',
+  '/articles',
   celebrate({
     body: Joi.object().keys({
       keyword: Joi.string().required().min(2),
@@ -31,9 +28,8 @@ router.post(
 
 router.post('*', (req, res, next) => next());
 
-router.delete('/:id', articleExist, deleteArticle);
+router.delete('/articles/:id', auth, articleExist, deleteArticle);
 
 router.delete('*', (req, res, next) => next());
 
-router.use((req, res, next) => { next(new NotFoundError('Requested resource not found')); });
 module.exports = router; // exporting the router

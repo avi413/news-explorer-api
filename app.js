@@ -7,14 +7,12 @@ const bodyParser = require('body-parser');
 const { errors } = require('celebrate');
 const { NotFoundError } = require('./middlewares/errors/errors');
 const { limiter } = require('./middlewares/limiter');
-const usersAouth = require('./routes/usersAouth');
-const articles = require('./routes/articles');
-const users = require('./routes/users');
+const allRouts = require('./routes/index');
 
-const auth = require('./middlewares/auth');
 const { requestLogger } = require('./middlewares/logger');
+const { DB_DEV_URL } = require('./utils/constants');
 
-const { PORT = 3000, MONGODB_URI } = process.env;
+const { PORT = 3000, MONGODB_URI = DB_DEV_URL } = process.env;
 
 mongoose
   .connect(MONGODB_URI, {
@@ -33,12 +31,11 @@ mongoose
     app.use(limiter);
     app.use(requestLogger);
 
-    app.use('/', usersAouth);
-    app.use('/users', auth, users);
-    app.use('/articles', auth, articles);
+    app.use('/', allRouts);
+
     app.get('*', () => {
-     throw new NotFoundError('Requested resource not found');
-    });
+      throw new NotFoundError('Requested resource not found');
+     });
 
     // error handlers
     app.use(errors()); // celebrate error handler

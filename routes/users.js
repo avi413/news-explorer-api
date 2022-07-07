@@ -1,11 +1,7 @@
 const router = require('express').Router(); // creating a router
-const { NotFoundError } = require('../middlewares/errors/errors');
 const { getMe } = require('../controllers/users');
+const auth = require('../middlewares/auth');
 
-router.get('/me', getMe);
-
-router.get('*', (req, res, next) => next());
-
-router.use((req, res, next) => { next(new NotFoundError('Requested resource not found')); });
+router.get('/users/me', auth, getMe);
 
 module.exports = router;

@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 const User = require('../models/user');
 const { NotFoundError, BadRequest, UnauthorizedError } = require('../middlewares/errors/errors');
-
+const {} =  require('../utils/constants');
 const { NODE_ENV, JWT_SECRET } = process.env;
 
 const isValid = (error, res) => {
@@ -32,7 +32,7 @@ module.exports.login = (req, res, next) => {
           // successful authentication
           const token = jwt.sign(
             { _id: user._id },
-            NODE_ENV === 'production' ? JWT_SECRET : 'not-so-secret-string',
+            NODE_ENV === 'production' ? JWT_SECRET : JWT_DEV_SECRET,
             {
               expiresIn: '7d',
             },
