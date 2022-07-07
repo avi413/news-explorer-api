@@ -11,3 +11,27 @@ module.exports.articlesValidate = celebrate({
       date: Joi.string().required(),
     }),
   });
+
+
+  module.exports.signinValidate =  celebrate({
+    body: Joi.object().keys({
+      email: Joi.string().email({
+        minDomainSegments: 2,
+      }),
+      password: Joi.string().required().min(2),
+    }),
+  });
+
+
+  module.exports.signupValidate =  celebrate({
+    body: Joi.object().keys({
+      email: Joi.string().email({
+        minDomainSegments: 2,
+        tlds: { allow: ['com', 'net'] },
+      }),
+      password: Joi.string().required().min(2),
+      name: Joi.string().required().min(2),
+    }),
+  });
+
+

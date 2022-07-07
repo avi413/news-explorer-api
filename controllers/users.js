@@ -25,10 +25,10 @@ module.exports.login = (req, res, next) => {
     .select('+password')
     .then((user) => {
       if (!user) {
-        throw new UnauthorizedError('Incorrect email or password');
-      }
-      // user.password is the hash from the database
-      return bcrypt
+        next(new UnauthorizedError('Incorrect email or password'));
+      } else {
+        // user.password is the hash from the database
+        return bcrypt
         .compare(password, user.password)
         .then((matched) => {
           if (!matched) {
@@ -45,6 +45,9 @@ module.exports.login = (req, res, next) => {
           res.send({ token });
         })
         .catch(next);
+      }
+
+
     });
 };
 
