@@ -25,7 +25,7 @@ module.exports.login = (req, res, next) => {
     .select('+password')
     .then((user) => {
       if (!user) {
-        next(new UnauthorizedError('Incorrect email or password'));
+        throw new UnauthorizedError('Incorrect email or password');
       } else {
         // user.password is the hash from the database
         return bcrypt
@@ -46,9 +46,8 @@ module.exports.login = (req, res, next) => {
         })
         .catch(next);
       }
-
-
-    });
+    })
+    .catch(next);
 };
 
 module.exports.getUsers = (req, res, next) => {
