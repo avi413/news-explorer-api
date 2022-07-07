@@ -1,13 +1,17 @@
 const mongoose = require('mongoose');
 const Article = require('../models/article');
-const { NotFoundError,UnauthorizedError, BadRequest } = require('../middlewares/errors/errors');
+const {
+  NotFoundError,
+  UnauthorizedError,
+  BadRequest,
+} = require('../middlewares/errors/errors');
 
 module.exports.getArticles = (req, res, next) => {
   const owner = req.user._id;
   if (!mongoose.Types.ObjectId.isValid(owner)) {
     throw new BadRequest('Invalid owner id');
   }
-  Article.find({owner: owner})
+  Article.find({ owner })
     // return the found data to the article
     .then((article) => {
       if (!Object.keys(article).length) {
@@ -19,9 +23,9 @@ module.exports.getArticles = (req, res, next) => {
     .catch(next);
 };
 
-module.exports.saveArticle = (req, res,next) => {
+module.exports.saveArticle = (req, res, next) => {
   const owner = req.user._id;
-  Article.create({...req.body, owner})
+  Article.create({ ...req.body, owner })
     .then((article) => res.status(201).send({ data: article }))
     .catch(next);
 };
