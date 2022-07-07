@@ -1,5 +1,5 @@
 const router = require('express').Router(); // creating a router
-const { celebrate, Joi } = require('celebrate');
+const { articlesValidate } = require('../middlewares/validate');
 const auth = require('../middlewares/auth');
 const {
   getArticles,
@@ -10,21 +10,7 @@ const {
 
 router.get('/articles', auth, getArticles);
 
-router.post(
-  '/articles',
-  celebrate({
-    body: Joi.object().keys({
-      keyword: Joi.string().required().min(2),
-      title: Joi.string().required(),
-      text: Joi.string().required().min(2),
-      source: Joi.string().required(),
-      link: Joi.string().required(),
-      image: Joi.string().required(),
-      date: Joi.string().required(),
-    }),
-  }),
-  saveArticle,
-);
+router.post('/articles', auth, articlesValidate, saveArticle,);
 
 router.post('*', (req, res, next) => next());
 
